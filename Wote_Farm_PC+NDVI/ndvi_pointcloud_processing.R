@@ -1,6 +1,7 @@
 #Script to visualize 3D point cloud generated from UAV photo orthomosaic and 
 #to render/ merge the point cloud with NDVI values
 
+#-------------------------------------------------------------------------------
 library(terra)# for working with raster
 library(sf) # for working spatial class
 library(lidR)# for working with  LAZ files
@@ -8,26 +9,19 @@ library(rayshader) # for 3D viz
 library(rgl) # for interactive plots
 library(ggplot2)
 library(magick)
+#-------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------------#
-#Set the working directory containing the point cloud (.las) and NDVI (.tif) files
-#The function helps to overcome the back slash/ forward slash issue encountered 
-#when using setwd in some environments
-#Working directory for this script is D:\Makueni VunaTech\Wote_Farm_PC+NDVI
-#Ask the user to enter i.e. paste, the path to directory/ folder containing the data 
-directory <- readline('Enter Path to Directory/ Folder:')
 
-#Set the working directory
-myfunction <- function(directory) 
-{
-  if (!is.null(directory))
-    setwd(directory)
-}
-myfunction(directory)
 
-#Print the current working directory
+#-------------------------------------------------------------------------------
+setwd("E:/Allan Wafula/My Works/MyCodes/R - Lidar Processing/Wote_Farm_PC+NDVI")
 getwd()
+#-------------------------------------------------------------------------------
 
+
+
+
+# ------------------------------------------------------------------------------
 #read laz files
 las = readLAS("wote_farm.laz")
 las
@@ -36,8 +30,13 @@ las_check(las)
 #plot the point cloud
 exportPath = tempfile()
 plot(las, bg = "white", axis = FALSE, clear_artifacts = FALSE, legend = TRUE)
-movie3d(spin3d(), duration = 5, movie = exportPath)
+movie3d(spin3d(), duration = 15, movie = exportPath)
+# ------------------------------------------------------------------------------
 
+
+
+
+# ------------------------------------------------------------------------------
 #load NDVI image
 ndvi <- rast('Wote_Farm_OM_NDVI.tif')
 ndvi #check values
@@ -47,7 +46,12 @@ ndvi[ndvi > 1] <- NA
 ndvi #check values
 #plot NDVI
 plot(ndvi, col = rev(terrain.colors(10)), legend = FALSE)
+# ------------------------------------------------------------------------------
 
+
+
+
+# ------------------------------------------------------------------------------
 #merge NDVI with point cloud
 ndvi_pc <- merge_spatial(las, ndvi, "ndvi")
 #check the data
@@ -56,8 +60,13 @@ las_check(ndvi_pc)
 exportPath = tempfile()
 ndvi_pc_plot <- plot(ndvi_pc, bg = "white", color = "ndvi", axis = FALSE, 
                      clear_artifacts = FALSE, legend = TRUE, mapview = TRUE)
-movie3d(spin3d(), duration = 5, movie = exportPath)
+movie3d(spin3d(), duration = 15, movie = exportPath)
+# ------------------------------------------------------------------------------
 
+
+
+
+# ------------------------------------------------------------------------------
 #Check the point cloud z profile to prepare for classification
 #Create a transect
 p1 <- c(412115.4, 9738280)
@@ -86,7 +95,13 @@ plot_crossection <- function(las,
   return(p)
 }
 plot_crossection(las, colour_by = factor(Classification))
+# ------------------------------------------------------------------------------
 
+
+
+
+
+# ------------------------------------------------------------------------------
 #Ground classification
 las <- classify_ground(las, algorithm = pmf(ws = 3, th = 1))
 #Visualize the classification
@@ -95,3 +110,6 @@ plot(las, color = "Classification", size = 3, bg = "white") #Visualize the class
 p1 <- c(412115.4, 9738280)
 p2 <- c(412350, 9738260)
 plot_crossection(las, p1 , p2, colour_by = factor(Classification))
+# ------------------------------------------------------------------------------
+
+
