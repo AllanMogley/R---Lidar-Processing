@@ -32,11 +32,8 @@ plot(las, bg = "white", axis = FALSE, clear_artifacts = FALSE, legend = TRUE)
 exportPath = tempfile()
 par3d(zoom = 0.4)
 movie3d(spin3d(), duration = 150, movie = exportPath)
-
-
 # Convert the movie to a GIF file
-outputPath = "output.gif"
-convert_video(exportPath, output_path = outputPath)
+
 # ------------------------------------------------------------------------------
 
 
@@ -44,7 +41,7 @@ convert_video(exportPath, output_path = outputPath)
 
 # ------------------------------------------------------------------------------
 #load NDVI image
-ndvi <- rast('Wote_Farm_OM_NDVI.tif')
+ndvi <- rast('2.tif')
 ndvi #check values
 #NDVi values are out of -1 ~ 1 range, remove out of range values
 ndvi[ndvi < -1] <- NA
